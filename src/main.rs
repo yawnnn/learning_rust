@@ -4,10 +4,10 @@
 mod two_sum {
     use std::collections::HashMap;
 
-    fn two_sum(v: Vec<i32>, target: i32) -> Option<(i32, i32)> {
+    pub fn two_sum(v: &[i32], target: i32) -> Option<(i32, i32)> {
         let mut pairs = HashMap::with_capacity(v.len());
 
-        for n in v {
+        for &n in v {
             let d = target - n;
 
             if pairs.get(&d).is_some() {
@@ -23,7 +23,6 @@ mod two_sum {
 
 // 2: Roman numerals to integer
 mod roman_numerals {
-    use std::iter::zip;
     use RomanNumeral::*;
 
     #[derive(PartialEq, Eq, Hash)]
@@ -65,7 +64,7 @@ mod roman_numerals {
 
         let mut total = 0;
 
-        for (n1, n2) in zip(numerals.iter(), numerals.iter().skip(1)) {
+        for (n1, n2) in numerals.iter().zip(numerals.iter().skip(1)) {
             if n2 > n1 {
                 total -= n1;
             } else {
@@ -73,15 +72,15 @@ mod roman_numerals {
             }
         }
 
-        if let Some(n) = numerals.last() {
-            total += *n;
+        if let Some(&n) = numerals.last() {
+            total += n;
         }
 
         total
     }
 }
 
-// 3: is palindrome
+// 3: Is palindrome
 mod is_palindrome {
     pub fn is_palindrome_1(mut n: i32) -> bool {
         let mut half = 0;
@@ -109,9 +108,7 @@ mod is_palindrome {
 }
 
 fn main() {
-    println!("{}", is_palindrome::is_palindrome_1(121));
-    println!("{}", is_palindrome::is_palindrome_1(1221));
-    println!("{}", is_palindrome::is_palindrome_1(1212));
-    println!("{}", is_palindrome::is_palindrome_1(12321));
-    println!("{}", is_palindrome::is_palindrome_1(12312));
+    println!("{:?}", two_sum::two_sum(&[2,7,11,15], 9));
+    println!("{:?}", two_sum::two_sum(&[3,2,4], 6));
+    println!("{:?}", two_sum::two_sum(&[3,3], 6));
 }

@@ -81,6 +81,37 @@ mod roman_numerals {
     }
 }
 
+// 3: is palindrome
+mod is_palindrome {
+    pub fn is_palindrome_1(mut n: i32) -> bool {
+        let mut half = 0;
+        
+        if n < 0 || (n != 0 && n % 10 == 0) { 
+            return false; 
+        }
+
+        while n > half {
+            half = (half * 10) + (n % 10);
+            n /= 10;
+        }
+
+        n == half || n == (half / 10)
+    }
+
+    pub fn is_palindrome_2(n: i32) -> bool {
+        let s = n.to_string();
+        let len = s.len() as f32;
+        let lower_half = (len / 2.).ceil() as usize;
+        let upper_half = (len / 2.).ceil() as usize;
+        
+        s.chars().take(lower_half).eq(s.chars().rev().take(upper_half))
+    }
+}
+
 fn main() {
-    println!("{}", roman_numerals::roman_to_integer("MCMXCIV"));
+    println!("{}", is_palindrome::is_palindrome_1(121));
+    println!("{}", is_palindrome::is_palindrome_1(1221));
+    println!("{}", is_palindrome::is_palindrome_1(1212));
+    println!("{}", is_palindrome::is_palindrome_1(12321));
+    println!("{}", is_palindrome::is_palindrome_1(12312));
 }

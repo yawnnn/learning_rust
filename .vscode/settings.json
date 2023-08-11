@@ -1,0 +1,14 @@
+{
+    "workbench.colorCustomizations": {
+        // Name of the theme you are currently using
+        "[Default Dark Modern]": {
+            // Defaults: 
+            // "editorInlayHint.foreground": "#868686f0",
+            // "editorInlayHint.background": "#18181800",
+
+            // Custom
+            "editorInlayHint.typeForeground": "#477547f0",
+            "editorInlayHint.parameterForeground": "#486148f0",
+        }
+    },
+}

@@ -140,9 +140,31 @@ mod longest_common_prefix {
     }
 }
 
+mod valid_parenthesis {
+    pub fn valid_parenthesis(s: &str) -> bool {
+        let mut openings = String::with_capacity((s.len() as f64 / 2.).ceil() as usize);
+
+        for c in s.chars() {
+            if "([{".contains(c) {
+                openings.push(c);
+            } else if let Some(opening) = openings.pop() {
+                if opening != 
+                    match c {
+                        ')' => '(', ']' => '[', '}' => '{',
+                        _   => '\0', } 
+                {
+                    return false;
+                }
+            }
+        }
+
+        openings.is_empty()
+    }
+}
+
 fn main() {
-    let v = vec!["flower", "fling", "flinging"];
-    println!("{:?}", longest_common_prefix::longest_common_prefix(&v));
-    let v = vec!["flower", "afling", "aflinging"];
-    println!("{:?}", longest_common_prefix::longest_common_prefix(&v));
+    println!("{:?}", valid_parenthesis::valid_parenthesis("([(])])"));
+    println!("{:?}", valid_parenthesis::valid_parenthesis("([(]))"));
+    println!("{:?}", valid_parenthesis::valid_parenthesis("([()])"));
+    println!("{:?}", valid_parenthesis::valid_parenthesis("()[]({})"));
 }

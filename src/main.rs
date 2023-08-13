@@ -107,8 +107,42 @@ mod is_palindrome {
     }
 }
 
+mod longest_common_prefix {
+    pub fn longest_common_prefix(v: &Vec<&str>) -> Option<String> {
+        if let Some(&base) = v.first() {
+            let mut prefix = base.to_owned();
+
+            for &s in v {
+                while !s.starts_with(&prefix) {
+                    prefix.pop();
+                }
+
+                if prefix.is_empty() {
+                    break;
+                }
+            }
+
+            return (!prefix.is_empty()).then_some(prefix);
+        }
+
+        None
+    }
+
+    /* I'd like to take &Vec<&str>, or at least &Vec<String>, but i can't seem to make it work with reduce */
+    pub fn longest_common_prefix_owned(v: Vec<String>) -> Option<String> {
+        v.into_iter().reduce(|accumulator, current| {
+            accumulator.chars()
+                .zip(current.chars())
+                .take_while(|(a, b)| a == b)
+                .map(|(c,_)| c)
+                .collect()
+        })
+    }
+}
+
 fn main() {
-    println!("{:?}", two_sum::two_sum(&[2,7,11,15], 9));
-    println!("{:?}", two_sum::two_sum(&[3,2,4], 6));
-    println!("{:?}", two_sum::two_sum(&[3,3], 6));
+    let v = vec!["flower", "fling", "flinging"];
+    println!("{:?}", longest_common_prefix::longest_common_prefix(&v));
+    let v = vec!["flower", "afling", "aflinging"];
+    println!("{:?}", longest_common_prefix::longest_common_prefix(&v));
 }

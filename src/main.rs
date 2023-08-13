@@ -162,9 +162,44 @@ mod valid_parenthesis {
     }
 }
 
+mod merge_sorted_list {
+    use std::collections::LinkedList;
+
+    pub fn merge_sorted_list(l1: LinkedList<i32>, l2: LinkedList<i32>) -> LinkedList<i32> {
+        let mut result: LinkedList<i32> = LinkedList::new(); 
+        let mut i1 = l1.iter().peekable();
+        let mut i2 = l2.iter().peekable();
+
+        while let (Some(&&x), Some(&&y)) = (i1.peek(), i2.peek()) {
+            if x <= y {
+                result.push_back(x);
+                i1.next();
+            } else {
+                result.push_back(y);
+                i2.next();
+            }
+        }
+
+        result.extend(i1);
+        result.extend(i2);
+
+        result
+    }
+}
+
 fn main() {
-    println!("{:?}", valid_parenthesis::valid_parenthesis("([(])])"));
-    println!("{:?}", valid_parenthesis::valid_parenthesis("([(]))"));
-    println!("{:?}", valid_parenthesis::valid_parenthesis("([()])"));
-    println!("{:?}", valid_parenthesis::valid_parenthesis("()[]({})"));
+    use std::collections::LinkedList;
+
+    let mut ll1 = LinkedList::new();
+    let mut ll2 = LinkedList::new();
+    
+    ll1.push_back(1);
+    ll1.push_back(2);
+    ll1.push_back(4);
+    ll2.push_back(1);
+    ll2.push_back(3);
+    ll2.push_back(4);
+    
+    println!("{:?}", merge_sorted_list::merge_sorted_list(ll1, ll2));
+    println!("{:?}", merge_sorted_list::merge_sorted_list(LinkedList::new(), LinkedList::new()));
 }

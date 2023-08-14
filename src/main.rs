@@ -108,7 +108,7 @@ mod is_palindrome {
 }
 
 mod longest_common_prefix {
-    pub fn longest_common_prefix(v: &Vec<&str>) -> Option<String> {
+    pub fn longest_common_prefix(v: &[&str]) -> Option<String> {
         if let Some(&base) = v.first() {
             let mut prefix = base.to_owned();
 
@@ -128,8 +128,8 @@ mod longest_common_prefix {
         None
     }
 
-    /* I'd like to take &Vec<&str>, or at least &Vec<String>, but i can't seem to make it work with reduce */
-    pub fn longest_common_prefix_owned(v: Vec<String>) -> Option<String> {
+    /* I'd like to take &[&str], but i can't seem to make it work with reduce */
+    pub fn longest_common_prefix_owned_vec(v: Vec<String>) -> Option<String> {
         v.into_iter().reduce(|accumulator, current| {
             accumulator.chars()
                 .zip(current.chars())
@@ -188,18 +188,5 @@ mod merge_sorted_list {
 }
 
 fn main() {
-    use std::collections::LinkedList;
-
-    let mut ll1 = LinkedList::new();
-    let mut ll2 = LinkedList::new();
-    
-    ll1.push_back(1);
-    ll1.push_back(2);
-    ll1.push_back(4);
-    ll2.push_back(1);
-    ll2.push_back(3);
-    ll2.push_back(4);
-    
-    println!("{:?}", merge_sorted_list::merge_sorted_list(ll1, ll2));
-    println!("{:?}", merge_sorted_list::merge_sorted_list(LinkedList::new(), LinkedList::new()));
+    println!("{:?}", longest_common_prefix::longest_common_prefix(&["flow", "flower", "flowl"]));
 }

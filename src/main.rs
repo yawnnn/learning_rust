@@ -128,8 +128,43 @@ mod longest_common_prefix {
         None
     }
 
-    /* I'd like to take &[&str], but i can't seem to make it work with reduce */
-    pub fn longest_common_prefix_owned_vec(v: Vec<String>) -> Option<String> {
+    pub fn longest_common_prefix_fold(v: &[&str]) -> Option<String> {
+        if let Some(&base) = v.first() {
+            let prefix = v.iter().fold(
+                base.to_owned(), 
+                |acc, &curr| acc
+                    .chars()
+                    .zip(curr.chars())
+                    .take_while(|(a, b)| a == b)
+                    .map(|(c,_)| c)
+                    .collect()
+            );
+
+            return (!prefix.is_empty()).then_some(prefix);
+        }
+
+        None
+    }
+
+    // trait DbgIter {
+    //     fn dbg_iter(self) -> Self;
+    // }
+
+    // impl<I, T> DbgIter for I 
+    // where
+    //     I: Iterator<Item = T> + Copy,
+    //     T: std::fmt::Debug
+    // {
+    //     fn dbg_iter(self) -> Self {
+    //         self.for_each(|s| print!("{:?}", s));
+    //         println!("");
+    //         self
+    //     }
+    // }
+
+    pub fn longest_common_prefix_reduce_copy(v: &[&str]) -> Option<String> {
+        let v: Vec<String> = v.iter().map(|&s| s.to_owned()).collect();
+
         v.into_iter().reduce(|accumulator, current| {
             accumulator.chars()
                 .zip(current.chars())
@@ -138,6 +173,23 @@ mod longest_common_prefix {
                 .collect()
         })
     }
+
+    // Nightly feature: collect_into()
+    // pub fn longest_common_prefix_reduce(v: &[&str]) -> Option<String> {
+    //     let s = String::with_capacity(
+    //         v.first()
+    //         .and_then(|s| Some(s.len()))
+    //         .unwrap_or(0)
+    //     );
+
+    //     v.iter().map(|&s| s).reduce(|accumulator, current| {
+    //         accumulator.chars()
+    //             .zip(current.chars())
+    //             .take_while(|(a, b)| a == b)
+    //             .map(|(c,_)| c)
+    //             .collect_into(s)
+    //     })
+    // }
 }
 
 mod valid_parenthesis {
@@ -188,5 +240,5 @@ mod merge_sorted_list {
 }
 
 fn main() {
-    println!("{:?}", longest_common_prefix::longest_common_prefix(&["flow", "flower", "flowl"]));
+    println!("{:?}", longest_common_prefix::longest_common_prefix_reduce_copy(&["flow", "aflower", "flowl"]));
 }

@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+//#![feature(iter_collect_into)]
 
 // 1: Two Sum
 mod two_sum {
@@ -108,62 +109,37 @@ mod is_palindrome {
 }
 
 mod longest_common_prefix {
-    pub fn longest_common_prefix(v: &[&str]) -> Option<String> {
-        if let Some(&base) = v.first() {
-            let mut prefix = base.to_owned();
+    pub fn longest_common_prefix<T: AsRef<str>>(v: &[T]) -> Option<String> {
+        let mut prefix = v.first()?.as_ref().to_owned();
 
-            for &s in v {
-                while !s.starts_with(&prefix) {
-                    prefix.pop();
-                }
-
-                if prefix.is_empty() {
-                    break;
-                }
+        for s in v {
+            while !s.as_ref().starts_with(&prefix) {
+                prefix.pop();
             }
 
-            return (!prefix.is_empty()).then_some(prefix);
+            if prefix.is_empty() {
+                break;
+            }
         }
 
-        None
+        return (!prefix.is_empty()).then_some(prefix);
     }
 
-    pub fn longest_common_prefix_fold(v: &[&str]) -> Option<String> {
-        if let Some(&base) = v.first() {
-            let prefix = v.iter().fold(
-                base.to_owned(), 
-                |acc, &curr| acc
-                    .chars()
-                    .zip(curr.chars())
-                    .take_while(|(a, b)| a == b)
-                    .map(|(c,_)| c)
-                    .collect()
-            );
+    pub fn longest_common_prefix_fold<T: AsRef<str>>(v: &[T]) -> Option<String> {
+        let prefix = v.iter()
+            .map(|s| s.as_ref())
+            .fold(v.first()?.as_ref().to_owned(), |acc, curr| acc
+                .chars()
+                .zip(curr.chars())
+                .take_while(|(a, b)| a == b)
+                .map(|(c,_)| c)
+                .collect());
 
-            return (!prefix.is_empty()).then_some(prefix);
-        }
-
-        None
+        return (!prefix.is_empty()).then_some(prefix);
     }
 
-    // trait DbgIter {
-    //     fn dbg_iter(self) -> Self;
-    // }
-
-    // impl<I, T> DbgIter for I 
-    // where
-    //     I: Iterator<Item = T> + Copy,
-    //     T: std::fmt::Debug
-    // {
-    //     fn dbg_iter(self) -> Self {
-    //         self.for_each(|s| print!("{:?}", s));
-    //         println!("");
-    //         self
-    //     }
-    // }
-
-    pub fn longest_common_prefix_reduce_copy(v: &[&str]) -> Option<String> {
-        let v: Vec<String> = v.iter().map(|&s| s.to_owned()).collect();
+    pub fn longest_common_prefix_reduce_copy<T: AsRef<str>>(v: &[T]) -> Option<String> {
+        let v: Vec<String> = v.into_iter().map(|s| s.as_ref().to_owned()).collect();
 
         v.into_iter().reduce(|accumulator, current| {
             accumulator.chars()
@@ -172,23 +148,26 @@ mod longest_common_prefix {
                 .map(|(c,_)| c)
                 .collect()
         })
+        .and_then(|s| (!s.is_empty()).then_some(s))
     }
 
     // Nightly feature: collect_into()
-    // pub fn longest_common_prefix_reduce(v: &[&str]) -> Option<String> {
-    //     let s = String::with_capacity(
+    // pub fn longest_common_prefix_reduce<T: AsRef<str>>(v: &[T]) -> Option<String> {
+    //     let mut s = String::with_capacity(
     //         v.first()
-    //         .and_then(|s| Some(s.len()))
+    //         .and_then(|s| Some(s.as_ref().len()))
     //         .unwrap_or(0)
     //     );
 
-    //     v.iter().map(|&s| s).reduce(|accumulator, current| {
+    //     v.iter().map(|s| s.as_ref()).reduce(|accumulator, current| {
     //         accumulator.chars()
     //             .zip(current.chars())
     //             .take_while(|(a, b)| a == b)
     //             .map(|(c,_)| c)
-    //             .collect_into(s)
+    //             .collect_into(&mut s)
+    //             .as_str()
     //     })
+    //     .and_then(|s| (!s.is_empty()).then_some(s.to_owned()))
     // }
 }
 
@@ -240,5 +219,9 @@ mod merge_sorted_list {
 }
 
 fn main() {
-    println!("{:?}", longest_common_prefix::longest_common_prefix_reduce_copy(&["flow", "aflower", "flowl"]));
+    let _v = vec![String::from("flow"), String::from("aflower"), String::from("flowl")];
+    let _v2 = ["aflow", "flower", "flowl"];
+    let _v3: Vec<String> = Vec::new(); 
+
+    println!("{:?}", longest_common_prefix::longest_common_prefix_fold(&_v2));
 }
